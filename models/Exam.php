@@ -37,13 +37,22 @@ class Exam extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @param $canDayByExam array
+     * @param $exam Exam
+     */
+
     private static function addCanDays(&$canDayByExam, $exam){
-        /* @var $exam Exam*/
         for ($i = 1; $i <= $exam->need_day; $i++ ){
             $prepareDay = $exam->exam_day - 3600 * 24 * $i;
             $canDayByExam[$exam->id][] = $prepareDay;
         }
     }
+
+    /**
+     * @param $canDayByExam array
+     * @param $day Integer
+     */
 
     private static function deleteCanDays(&$canDayByExam, $day){
         foreach ($canDayByExam as $key => $dayList){
@@ -54,15 +63,24 @@ class Exam extends \yii\db\ActiveRecord
         }
     }
 
+    /**
+     * set start_time attribute
+     */
     public static function setNeedDay(){
         $canDayByExam = [];
+        /* сортировка по количеству дней */
         $exams = self::find()->orderBy('need_day asc')->all();
+        /*Заполняем массив с возможными днями для каждого экзамена*/
         foreach ($exams as $exam){
             self::addCanDays($canDayByExam, $exam);
         }
+        /*Уделяем из массива возможных дней дни экзаменов*/
         foreach ($exams as $exam){
             self::deleteCanDays($canDayByExam, $exam->exam_day);
         }
+        /*сперва вычисляем для экзаменова у которого меньше возможных дней
+        а из массива возможных дней удаляем эти дни.
+        */
         foreach ($exams as $exam){
             $days = $canDayByExam[$exam->id];
             if (isset($days) && is_array($days) && sizeof($days) > 0){
