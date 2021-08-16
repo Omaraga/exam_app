@@ -17,7 +17,8 @@ class ExamForm extends Model
         return [
             [['exam_day', 'title', 'need_day'], 'required'],
             [['need_day'], 'integer'],
-            [['title', 'exam_day'], 'string','min' => 1, 'max' => 11],
+            [['title', 'exam_day'], 'string','min' => 1, 'max' => 10],
+            ['title', 'match', 'pattern' => '/^[a-zA-Z]'],
         ];
     }
 
