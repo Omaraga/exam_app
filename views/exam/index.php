@@ -9,13 +9,24 @@ use yii\grid\GridView;
 $this->title = 'Exams';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    .deadline {
+        animation: color-change 1s infinite;
+    }
+
+    @keyframes color-change {
+        0% { color: red; }
+        50% { color: blue; }
+        100% { color: green; }
+    }
+</style>
 <div class="exam-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Exam', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Exec need day', ['exam/need-day'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Добавить экзамен', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Посчитать дедлайн', ['exam/need-day'], ['class' => 'btn btn-primary']) ?>
     </p>
 
 
@@ -25,20 +36,27 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'title',
+            [
+                'attribute' => 'title',
+                'label' => 'Название',
+            ],
             [
                 'attribute' => 'start_time',
-                'label' => 'Deadline',
+                'label' => 'Дата дедлайна',
                 'content' => function($data){
                     if ($data->start_time == 0){
-                        return 'unavailable';
+                        return 'не рассчитан';
                     }
-                    return date('d.m.Y', $data->start_time);
+                    return '<span class="deadline" style="font-weight: bold;">'.date('d.m.Y', $data->start_time).'</span>';
                 }
             ],
-            'need_day',
+            [
+                'attribute' => 'need_day',
+                'label' => 'Количество дней для подготовки',
+            ],
             [
                 'attribute' => 'exam_day',
+                'label' => 'Дата экзамена',
                 'content' => function($data){
                     return date('d.m.Y', $data->exam_day);
                 }

@@ -98,9 +98,11 @@ class ExamController extends Controller
 
     public function actionNeedDay(){
         Exam::setNeedDay();
+
         return $this->redirect(['index']);
 
     }
+
 
     /**
      * Finds the Exam model based on its primary key value.
